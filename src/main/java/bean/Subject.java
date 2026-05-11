@@ -4,22 +4,8 @@ import java.io.Serializable;
 
 public class Subject implements Serializable {
 
-    private String schoolCd; 
-    private String cd;       
-    private String name;
-	/**
-	 * @return schoolCd
-	 */
-	public String getSchoolCd() {
-		return schoolCd;
-	}
-	/**
-	 * @param schoolCd セットする schoolCd
-	 */
-	public void setSchoolCd(String schoolCd) {
-		this.schoolCd = schoolCd;
-	}
-	/**
+    private String cd;     
+    /**
 	 * @return cd
 	 */
 	public String getCd() {
@@ -42,6 +28,21 @@ public class Subject implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}     
+	}
+	/**
+	 * @return school
+	 */
+	public School getSchool() {
+		return school;
+	}
+	/**
+	 * @param school セットする school
+	 */
+	public void setSchool(School school) {
+		this.school = school;
+	}
+	private String name;   
+    private School school; 
 
+    
 }
