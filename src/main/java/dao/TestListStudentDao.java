@@ -12,7 +12,8 @@ import bean.TestListStudent;
 
 public class TestListStudentDao extends Dao {
 
-	//SQL JOIN で科目ｃｄ・科目name・回数・点数を一括取得
+	//SQL JOIN でtest,subjectテーブルを参照し、
+	//科目ｃｄ・科目name・回数・点数を一括取得
 	private String baseSql = "SELECT t.subject_cd, s.name AS subject_name, t.no, t.point FROM test t JOIN subject s ON t.subject_cd = s.cd WHERE t.student_no = ?";
 
 	private List<TestListStudent> postFilter(ResultSet rSet) throws Exception {
