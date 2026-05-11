@@ -3,8 +3,9 @@ package bean;
 import java.io.Serializable;
 
 public class Subject implements Serializable {
-    private String schoolCd;
-    private String cd;
+
+    private String schoolCd; 
+    private String cd;       
     private String name;
 	/**
 	 * @return schoolCd
@@ -41,5 +42,6 @@ public class Subject implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
+	}     
+
 }
