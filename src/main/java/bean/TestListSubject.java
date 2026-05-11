@@ -8,7 +8,7 @@ public class TestListSubject extends User implements Serializable {
 	private String studentNo;
 	private String studentName;
 	private String classNum;
-	//<回数,得点>？
+	//<回数,得点>
 	private Map<Integer, Integer> points;
 
 	public int getEntYear() {
