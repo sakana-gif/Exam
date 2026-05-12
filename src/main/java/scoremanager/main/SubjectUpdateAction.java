@@ -1,8 +1,7 @@
 package scoremanager.main;
 
-import javax.security.auth.Subject;
-
 import bean.School;
+import bean.Subject;
 import bean.Teacher;
 import dao.SubjectDao;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +18,6 @@ public class SubjectUpdateAction extends Action {
         String cd = req.getParameter("cd");
 
         SubjectDao subjectDao = new SubjectDao();
-
         Subject subject = subjectDao.get(cd, school);
 
         req.setAttribute("subject", subject);

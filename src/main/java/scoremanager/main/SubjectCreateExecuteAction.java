@@ -10,28 +10,34 @@ import jakarta.servlet.http.HttpSession;
 import tool.Action;
 
 public class SubjectCreateExecuteAction extends Action {
+
     @Override
     public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        // Retrieve parameters
-        String cd = req.getParameter("cd");
-        String name = req.getParameter("name");
 
-        // Get school from session
         HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
         School school = teacher.getSchool();
 
-        // Create Subject bean and populate it
+        
+        String cd   = req.getParameter("cd").trim();
+        String name = req.getParameter("name").trim();
+
+        SubjectDao subjectDao = new SubjectDao();
+        if (subjectDao.get(cd, school) != null) {
+            req.setAttribute("error", "科目コードが重複しています");
+            req.setAttribute("cd", cd);
+            req.setAttribute("name", name);
+            req.getRequestDispatcher("subject_create.jsp").forward(req, res);
+            return;
+        }
+
         Subject subject = new Subject();
+        subject.setSchool(school);
         subject.setCd(cd);
         subject.setName(name);
-        subject.setSchool(school);
 
-        // Save to database via DAO
-        SubjectDao sDao = new SubjectDao();
-        sDao.save(subject);
+        subjectDao.save(subject);
 
-        // Forward to the completion screen
         req.getRequestDispatcher("subject_create_done.jsp").forward(req, res);
     }
 }
