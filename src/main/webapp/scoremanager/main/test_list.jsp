@@ -13,9 +13,10 @@
 
       <h2 class="h3 mb-4">成績参照</h2>
 
+      <%-- 科目・クラス検索 --%>
       <form action="TestList.action" method="get">
         <div class="row border-bottom pb-3 mb-4">
-          
+
           <div class="col-4">
             <label class="form-label">入学年度</label>
             <select name="f1" class="form-select">
@@ -43,7 +44,22 @@
           <div class="col-2 d-flex align-items-end">
             <button type="submit" class="btn btn-secondary" id="searchBtn">検索</button>
           </div>
-          
+
+        </div>
+      </form>
+
+      <%-- 学生番号検索 --%>
+      <form action="TestListStudentExecute.action" method="get">
+        <div class="row border-bottom pb-3 mb-4">
+          <h5>学生毎</h5>
+          <div class="col-4">
+            <label class="form-label">学生番号</label>
+            <input class="form-control" type="text" name="student_no" value="${student_no }" placeholder="学生番号を入力してください" />
+          </div>
+          <div class="col-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-secondary">検索</button>
+          </div>
+          <div class="mt-2 text-warning">${error }</div>
         </div>
       </form>
 
