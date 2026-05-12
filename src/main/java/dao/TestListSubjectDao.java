@@ -26,11 +26,11 @@ public class TestListSubjectDao extends Dao {
 	}
 
 	/**
-	 * filterメソッド 生徒cdを指定して成績データを取得する
+	 * filterメソッド 入学年度、クラス番号、科目、学校を指定して成績データを取得する
 	 *
-	 * @param cd:String
-	 *            生徒cd
-	 * @return List<TestListStudent>
+	 * @param entYear:int, classNum:String, subject:Subject school:School
+	 *            
+	 * @return List<TestListSubject>
 	 * @throws Exception
 	 */
 	public List<TestListSubject> filter(int entYear, String classNum, Subject subject, School school) throws Exception {
