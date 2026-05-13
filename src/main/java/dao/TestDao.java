@@ -14,22 +14,23 @@ import bean.Test;
 
 public class TestDao extends Dao {
 
-	private String baseSql = "select * from test where school_cd = ?";
+	private String basesql = "select * from student left join test on test.student_no = student.no and test.subject_cd = ? and test.no = ? where student.ent_year = ? and student.class_num = ?";
 
-	public Test get(Student student, Subject subject, School school, int no) throws Exception {
+	public Test get(Student student, Subject subject, School school, int num) throws Exception {
 		Test test = null;
 		Connection connection = getConnection();
 		PreparedStatement statement = null;
 
 		try {
-			statement = connection.prepareStatement(baseSql + " and student_no = ? and subject_cd = ? and no = ?");
-			statement.setString(1, school.getCd().trim());
-			statement.setString(2, student.getNo().trim());
-			statement.setString(3, subject.getCd().trim());
-			statement.setInt(4, no);
+			statement = connection.prepareStatement(basesql + " and student.no = ?");
+			statement.setString(1, subject.getCd());
+			statement.setInt(2, num);
+			statement.setInt(3, student.getEntYear());
+			statement.setString(4, student.getClassNum());
+			statement.setString(5, student.getNo());
 
 			ResultSet resultSet = statement.executeQuery();
-			List<Test> list = postFilter(resultSet, school);
+			List<Test> list = postFilter(resultSet, subject, school, num);
 			if (list.size() > 0) {
 				test = list.get(0);
 			} else {
@@ -49,23 +50,29 @@ public class TestDao extends Dao {
 		return test;
 	}
 
-	private List<Test> postFilter(ResultSet rSet, School school) throws Exception {
+	private List<Test> postFilter(ResultSet rSet, Subject subject, School school, int num) throws Exception {
 		List<Test> list = new ArrayList<>();
 		StudentDao studentDao = new StudentDao();
-		SubjectDao subjectDao = new SubjectDao();
 		try {
 			while (rSet.next()) {
 				Test test = new Test();
-				test.setNo(rSet.getInt("no"));
+				test.setNo(num);
 				test.setPoint(rSet.getInt("point"));
 				test.setClassNum(rSet.getString("class_num").trim());
 				// Note: You would typically use StudentDao and SubjectDao here to populate objects
 				test.setSchool(school);
 
-				// 05/12 追加：Student,をtestに入れる
-				test.setStudent(studentDao.get(rSet.getString("STUDENT_NO").trim()));
-				test.setSubject(subjectDao.get(rSet.getString("SUBJECT_CD").trim(), school));
+				// 05/13 追加：Student,Subjectをtestに入れる
+				test.setStudent(studentDao.get(rSet.getString("student.no").trim()));
+				test.setSubject(subject);
 
+				System.out.println("---------------------");
+				System.out.println(test.getNo());
+				System.out.println(test.getPoint());
+				System.out.println(test.getClassNum());
+				System.out.println(test.getSchool().getCd());
+				System.out.println(test.getStudent().getNo());
+				System.out.println(test.getSubject().getCd());
 				list.add(test);
 			}
 		} catch (SQLException e) {
@@ -79,19 +86,22 @@ public class TestDao extends Dao {
 		Connection connection = getConnection();
 		PreparedStatement statement = null;
 
-		// Combining the base SQL with filters for test management
-		String sql = "select * from test join student on test.student_no = student.no where test.school_cd = ? and student.ent_year = ? and test.class_num = ? and test.subject_cd = ? and test.no = ?";
-
 		try {
-			statement = connection.prepareStatement(sql);
-			statement.setString(1, school.getCd().trim());
-			statement.setInt(2, entYear);
-			statement.setString(3, classNum.trim());
-			statement.setString(4, subject.getCd().trim());
-			statement.setInt(5, num);
+			statement = connection.prepareStatement(basesql);
+			statement.setString(1, subject.getCd());
+			statement.setInt(2, num);
+			statement.setInt(3, entYear);
+			statement.setString(4, classNum.trim());
+
+			//			
+			//			statement.setString(1, school.getCd().trim());
+			//			statement.setInt(2, entYear);
+			//			statement.setString(3, classNum.trim());
+			//			statement.setString(4, subject.getCd().trim());
+			//			statement.setInt(5, num);
 
 			ResultSet resultSet = statement.executeQuery();
-			list = postFilter(resultSet, school);
+			list = postFilter(resultSet, subject, school,num);
 		} catch (Exception e) {
 			throw e;
 		} finally {
