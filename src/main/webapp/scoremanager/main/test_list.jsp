@@ -14,10 +14,10 @@
       <h2 class="h3 mb-4">成績参照</h2>
 
       <%-- 科目・クラス検索 --%>
-      <form action="TestList.action" method="get">
+      <form action="TestListSubjectExecute.action" method="get">
         <div class="row border-bottom pb-3 mb-4">
 
-          <div class="col-4">
+          <div class="col-3">
             <label class="form-label">入学年度</label>
             <select name="f1" class="form-select">
               <option value="">--------</option>
@@ -29,7 +29,7 @@
             </select>
           </div>
 
-          <div class="col-4">
+          <div class="col-3">
             <label class="form-label">クラス</label>
             <select name="f2" class="form-select">
               <option value="">--------</option>
@@ -41,9 +41,23 @@
             </select>
           </div>
 
-          <div class="col-2 d-flex align-items-end">
-            <button type="submit" class="btn btn-secondary" id="searchBtn">検索</button>
+          <div class="col-3">
+            <label class="form-label">科目</label>
+            <select name="f3" class="form-select">
+              <option value="">--------</option>
+              <c:forEach var="subject" items="${subject_set}">
+                <option value="${subject.cd}" <c:if test="${subject.cd == f3}">selected</c:if>>
+                  ${subject.name}
+                </option>
+              </c:forEach>
+            </select>
           </div>
+
+          <div class="col-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-secondary">検索</button>
+          </div>
+
+          <div class="mt-2 text-warning">${error }</div>
 
         </div>
       </form>
@@ -65,7 +79,7 @@
 
       <c:choose>
         <c:when test="${not empty tests}">
-          <%-- ここに成績一覧のテーブルを記述（必要であれば追加します） --%>
+          <%-- 成績一覧テーブル --%>
         </c:when>
         <c:otherwise>
           <p>入学年度とクラスを選択して検索してください</p>
