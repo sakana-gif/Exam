@@ -1,40 +1,64 @@
 package scoremanager.main;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
+ 
 import java.util.List;
 
-import bean.School;
-import bean.Teacher;
-import dao.ClassNumDao;
+import bean.Student;
+import bean.TestListStudent;
+import dao.StudentDao;
+import dao.TestListStudentDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import tool.Action;
-
+ 
 public class TestListStudentExecuteAction extends Action {
+ 
+	@Override
 
-    @Override
-    public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        // セッションから教師と学校情報を取得
-        HttpSession session = req.getSession();
-        Teacher teacher = (Teacher) session.getAttribute("user");
-        School school = teacher.getSchool();
+	public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-        // クラス番号リストを取得
-        ClassNumDao classNumDao = new ClassNumDao();
-        List<String> class_num_set = classNumDao.filter(school);
-        req.setAttribute("class_num_set", class_num_set);
+		//ローカル変数の宣言 1
 
-        // 入学年度リスト（現在を基準に前後10年）
-        int currentYear = LocalDate.now().getYear();
-        List<Integer> ent_year_set = new ArrayList<>();
-        for (int y = currentYear - 10; y <= currentYear + 10; y++) {
-            ent_year_set.add(y);
-        }
-        req.setAttribute("ent_year_set", ent_year_set);
+		String studentNo = req.getParameter("f4");
 
-        // 学生別の成績参照画面へフォワード
-        req.getRequestDispatcher("test_list_student.jsp").forward(req, res);
-    }
+		StudentDao sDao = new StudentDao();
+
+		TestListStudentDao tlsDao = new TestListStudentDao();
+ 
+		//リクエストパラメータ―の取得 2
+
+		// 宣言時に実施
+ 
+		//DBからデータ取得 3
+
+		Student student = sDao.get(studentNo);
+
+		List<TestListStudent> tests = null;
+
+		if (student != null) {
+
+			tests = tlsDao.filter(student);
+
+		}
+ 
+		//ビジネスロジック 4
+
+		// なし
+ 
+		//DBへデータ保存 5
+
+		// なし
+ 
+		//レスポンス値をセット 6
+
+		req.setAttribute("student", student);
+
+		req.setAttribute("tests", tests);
+ 
+		//JSPへフォワード 7
+
+		req.getRequestDispatcher("test_list_student.jsp").forward(req, res);
+
+	}
+
 }
+ 

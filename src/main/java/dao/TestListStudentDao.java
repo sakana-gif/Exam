@@ -1,5 +1,5 @@
 package dao;
-
+ 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,53 +9,42 @@ import java.util.List;
 
 import bean.Student;
 import bean.TestListStudent;
-
+ 
 public class TestListStudentDao extends Dao {
-
-	//SQL JOIN でtest,subjectテーブルを参照し、
-	//科目ｃｄ・科目name・回数・点数を一括取得
-	private String baseSql = "SELECT t.subject_cd, s.name AS subject_name, t.no, t.point FROM test t JOIN subject s ON t.subject_cd = s.cd WHERE t.student_no = ?";
-
-	private List<TestListStudent> postFilter(ResultSet rSet) throws Exception {
-		List<TestListStudent> list = new ArrayList<>();
-		try {
-			while (rSet.next()) {
-				TestListStudent testStudent = new TestListStudent();
-				testStudent.setSubjectName(rSet.getString("subject_name"));
-				testStudent.setSubjectCd(rSet.getString("subject_cd"));
-				testStudent.setNum(rSet.getInt("no"));
-				testStudent.setPoint(rSet.getInt("point"));
-
-				list.add(testStudent);
-			}
-		} catch (SQLException e) {
-			throw e;
-		}
-		return list;
-	}
-
+ 
 	/**
-	 * filterメソッド 生徒cdを指定して成績データを取得する
+	 * filterメソッド 学生を指定して、その学生が受験したすべての科目の成績一覧を取得する
 	 *
-	 * @param cd:String
-	 *            生徒cd
-	 * @return List<TestListStudent>
+	 * @param student:Student 学生
+	 * @return 学生別成績一覧のリスト:List<TestListStudent>
 	 * @throws Exception
 	 */
 	public List<TestListStudent> filter(Student student) throws Exception {
-
 		List<TestListStudent> list = new ArrayList<>();
 		Connection connection = getConnection();
 		PreparedStatement statement = null;
-		ResultSet rSet = null;
-
+ 
 		try {
-			statement = connection.prepareStatement(baseSql);
+			// SUBJECTテーブルとTESTテーブルを結合
+			String sql = "SELECT s.name AS subject_name, s.cd AS subject_cd, t.no, t.point "
+					+ "FROM subject s "
+					+ "JOIN test t ON s.cd = t.subject_cd AND s.school_cd = t.school_cd "
+					+ "WHERE t.student_no = ? AND t.school_cd = ? "
+					+ "ORDER BY s.cd asc, t.no asc";
+ 
+			statement = connection.prepareStatement(sql);
 			statement.setString(1, student.getNo());
-			rSet = statement.executeQuery();
-
-			list = postFilter(rSet);
-
+			statement.setString(2, student.getSchool().getCd());
+			ResultSet resultSet = statement.executeQuery();
+ 
+			while (resultSet.next()) {
+				TestListStudent testList = new TestListStudent();
+				testList.setSubjectName(resultSet.getString("subject_name"));
+				testList.setSubjectCd(resultSet.getString("subject_cd"));
+				testList.setNum(resultSet.getInt("no"));
+				testList.setPoint(resultSet.getInt("point"));
+				list.add(testList);
+			}
 		} catch (Exception e) {
 			throw e;
 		} finally {
@@ -74,7 +63,6 @@ public class TestListStudentDao extends Dao {
 				}
 			}
 		}
-
 		return list;
 	}
 }

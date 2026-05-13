@@ -1,77 +1,71 @@
 package scoremanager.main;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
+ 
 import java.util.List;
 
 import bean.School;
 import bean.Subject;
 import bean.Teacher;
 import bean.TestListSubject;
-import dao.ClassNumDao;
 import dao.SubjectDao;
 import dao.TestListSubjectDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import tool.Action;
-
+ 
 public class TestListSubjectExecuteAction extends Action {
+ 
+	@Override
 
-    @Override
-    public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
+	public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-       
-        HttpSession session = req.getSession();
-        Teacher teacher = (Teacher) session.getAttribute("user");
-        School school = teacher.getSchool();
+		//ローカル変数の宣言 1
 
-        
-        ClassNumDao classNumDao = new ClassNumDao();
-        List<String> class_num_set = classNumDao.filter(school);
-        req.setAttribute("class_num_set", class_num_set);
+		HttpSession session = req.getSession();
 
-       
-        SubjectDao subjectDao = new SubjectDao();
-        List<Subject> subject_set = subjectDao.filter(school);
-        req.setAttribute("subject_set", subject_set);
+		Teacher teacher = (Teacher) session.getAttribute("user");
 
-      
-        int currentYear = LocalDate.now().getYear();
-        List<Integer> ent_year_set = new ArrayList<>();
-        for (int y = currentYear - 10; y <= currentYear + 10; y++) {
-            ent_year_set.add(y);
-        }
-        req.setAttribute("ent_year_set", ent_year_set);
+		School school = teacher.getSchool();
 
-        
-        String entYearStr = req.getParameter("f1");
-        String classNum   = req.getParameter("f2");
-        String subjectCd  = req.getParameter("f3");
+		int entYear = Integer.parseInt(req.getParameter("f1"));
 
-        
-        if (entYearStr == null || entYearStr.isEmpty() ||
-            classNum == null || classNum.isEmpty() ||
-            subjectCd == null || subjectCd.isEmpty()) {
-            req.setAttribute("error", "入学年度とクラスと科目を選択してください");
-            req.getRequestDispatcher("test_list.jsp").forward(req, res);
-            return;
-        }
+		String classNum = req.getParameter("f2");
 
-        int entYear = Integer.parseInt(entYearStr);
+		String subjectCd = req.getParameter("f3");
 
-      
-        Subject subject = subjectDao.get(subjectCd, school);
+		SubjectDao subDao = new SubjectDao();
 
-      
-        TestListSubjectDao testListSubjectDao = new TestListSubjectDao();
-        List<TestListSubject> testList = testListSubjectDao.filter(entYear, classNum, subject, school);
+		TestListSubjectDao tlsDao = new TestListSubjectDao();
+ 
+		//リクエストパラメータ―の取得 2
 
-        req.setAttribute("f1", entYear);
-        req.setAttribute("f2", classNum);
-        req.setAttribute("f3", subjectCd);
-        req.setAttribute("testList", testList);
+		// 宣言時に実施
+ 
+		//DBからデータ取得 3
 
-        req.getRequestDispatcher("test_list_subject.jsp").forward(req, res);
-    }
+		Subject subject = subDao.get(subjectCd, school);
+
+		List<TestListSubject> tests = tlsDao.filter(entYear, classNum, subject, school);
+ 
+		//ビジネスロジック 4
+
+		// なし
+ 
+		//DBへデータ保存 5
+
+		// なし
+ 
+		//レスポンス値をセット 6
+
+		req.setAttribute("subject", subject);
+
+		req.setAttribute("tests", tests);
+ 
+		//JSPへフォワード 7
+
+		req.getRequestDispatcher("test_list_subject.jsp").forward(req, res);
+
+	}
+
 }
+ 
