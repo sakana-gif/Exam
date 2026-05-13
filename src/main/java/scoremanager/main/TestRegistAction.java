@@ -72,9 +72,11 @@ public class TestRegistAction extends Action {
 			TestDao testDao = new TestDao();
 			tests = testDao.filter(entYear, classNum, subject, no, school);
 		}
-
+		
+		
 		req.setAttribute("tests", tests);
-
+		req.setAttribute("subject", subject);
+		
 		// クラス番号リストを取得
 		ClassNumDao classNumDao = new ClassNumDao();
 		List<String> class_num_set = classNumDao.filter(school);

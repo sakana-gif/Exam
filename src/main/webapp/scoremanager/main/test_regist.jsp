@@ -6,10 +6,11 @@
 	<c:param name="title">得点管理システム</c:param>
 	<c:param name="content">
 		<section class="me-4">
-			<h2 class="h3 mb-4">成績登録</h2>
+			<h2 class="h3 mb-3 fw-norma bg-secondary bg-opacity-10 py-2 px-4">成績登録</h2>
 			<form action="TestRegist.action" method="get">
-				<div class="row border-bottom pb-3 mb-4">
-					<div class="col-3">
+				<div
+					class="row border rounded align-items-center pt-3 pb-3 mx-3 mb-3">
+					<div class="col-2">
 						<label class="form-label">入学年度</label> <select name="ent_year"
 							class="form-select" required>
 							<option value="">--------</option>
@@ -19,7 +20,7 @@
 							</c:forEach>
 						</select>
 					</div>
-					<div class="col-3">
+					<div class="col-2">
 						<label class="form-label">クラス</label> <select name="class_num"
 							class="form-select" required>
 							<option value="">--------</option>
@@ -29,7 +30,7 @@
 							</c:forEach>
 						</select>
 					</div>
-					<div class="col-3">
+					<div class="col-4">
 						<label class="form-label">科目</label> <select name="subject_cd"
 							class="form-select" required>
 							<option value="">--------</option>
@@ -39,23 +40,28 @@
 							</c:forEach>
 						</select>
 					</div>
-					<div class="col-3">
+					<div class="col-2">
 						<label class="form-label">回数</label> <select name="no"
 							class="form-select" required>
 							<c:forEach var="n" items="${num_set}">
-								<option value="${n}" <c:if test="${n==no }">selected</c:if>>${n}回目</option>
+								<option value="${n}" <c:if test="${n==no }">selected</c:if>>${n}</option>
 							</c:forEach>
 						</select>
 					</div>
-					<div class="col-12 mt-3 text-end">
+					<div class="col d-flex align-items-end">
 						<button type="submit" class="btn btn-secondary">検索</button>
 					</div>
 				</div>
 			</form>
+
+			<c:if test="${subject!=null}">
+				<div>科目：${subject.name}（${no}回）</div>
+			</c:if>
+
 			<c:choose>
 
 				<c:when test="${tests.size()>0 }">
-					<div>検索結果：${tests.size() }件</div>
+
 					<form action="TestRegistExecute.action" method="post">
 						<table class="table table-hover">
 							<tr>
@@ -87,11 +93,13 @@
 					</form>
 				</c:when>
 				<c:otherwise>
-					<div>学生情報が存在しませんでした。</div>
+					<c:if test="${subject!=null}">
+						<div>学生情報が存在しませんでした。</div>
+					</c:if>
 				</c:otherwise>
 
 			</c:choose>
-
+			<div class="mt-2 text-warning">${error}</div>
 		</section>
 	</c:param>
 </c:import>
