@@ -5,8 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bean.School;
+import bean.Student;
+import bean.Subject;
 import bean.Teacher;
+import bean.TestListStudent;
 import dao.ClassNumDao;
+import dao.StudentDao;
+import dao.SubjectDao;
+import dao.TestListStudentDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -16,6 +22,7 @@ public class TestListStudentExecuteAction extends Action {
 
     @Override
     public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
+
         // セッションから教師と学校情報を取得
         HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
@@ -26,7 +33,12 @@ public class TestListStudentExecuteAction extends Action {
         List<String> class_num_set = classNumDao.filter(school);
         req.setAttribute("class_num_set", class_num_set);
 
-        // 入学年度リスト（現在を基準に前後10年）
+        // 科目リストを取得
+        SubjectDao subjectDao = new SubjectDao();
+        List<Subject> subject_set = subjectDao.filter(school);
+        req.setAttribute("subject_set", subject_set);
+
+        // 入学年度リスト
         int currentYear = LocalDate.now().getYear();
         List<Integer> ent_year_set = new ArrayList<>();
         for (int y = currentYear - 10; y <= currentYear + 10; y++) {
@@ -34,7 +46,28 @@ public class TestListStudentExecuteAction extends Action {
         }
         req.setAttribute("ent_year_set", ent_year_set);
 
-        // 学生別の成績参照画面へフォワード
+        // 学生番号を取得
+        String studentNo = req.getParameter("student_no");
+
+        // 学生番号が未入力の場合
+        if (studentNo == null || studentNo.trim().isEmpty()) {
+            req.setAttribute("error", "このフィールドを入力してください");
+            req.getRequestDispatcher("test_list.jsp").forward(req, res);
+            return;
+        }
+
+        // 学生データを取得
+        StudentDao studentDao = new StudentDao();
+        Student student = studentDao.get(studentNo.trim());
+        student.setNo(student.getNo().trim()); // スペースを除去
+
+        // 成績データを取得
+        TestListStudentDao testListStudentDao = new TestListStudentDao();
+        List<TestListStudent> testList = testListStudentDao.filter(student);
+
+        req.setAttribute("student", student);
+        req.setAttribute("testList", testList);
+
         req.getRequestDispatcher("test_list_student.jsp").forward(req, res);
     }
 }

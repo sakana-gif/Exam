@@ -21,7 +21,7 @@ public class StudentDao extends Dao {
         PreparedStatement statement = null;
 
         try {
-            statement = connection.prepareStatement("select * from student where no = ?");
+            statement = connection.prepareStatement("select * from student where trim(no) = ?");
             statement.setString(1, no);
             ResultSet resultSet = statement.executeQuery();
 
