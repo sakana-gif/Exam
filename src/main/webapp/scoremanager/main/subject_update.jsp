@@ -53,7 +53,7 @@
                 <!-- ボタン -->
                 <div class="mx-auto py-2">
                     <button class="btn btn-secondary" name="end">
-                        変更して終了
+                        変更
                     </button>
                 </div>
 

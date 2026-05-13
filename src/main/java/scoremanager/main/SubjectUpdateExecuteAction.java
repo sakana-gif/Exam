@@ -1,15 +1,14 @@
 package scoremanager.main;
 
-import javax.security.auth.Subject;
-
 import bean.School;
+import bean.Subject;
 import bean.Teacher;
-//import dao.SubjectDao;
+import dao.SubjectDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import tool.Action;
 
-public class SubjectUpdateExecutionAction extends Action {
+public class SubjectUpdateExecuteAction extends Action {
 
     @Override
     public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -21,13 +20,13 @@ public class SubjectUpdateExecutionAction extends Action {
 
         Subject subject = new Subject();
 
-//        subject.setCd(cd);
-//        subject.setName(name);
-//        subject.setSchool(school);
-//
-//        SubjectDao dao = new SubjectDao();
+        // ↓ 必要なら有効化
+         subject.setCd(cd);
+         subject.setName(name);
+         subject.setSchool(school);
 
-//        dao.save(subject);
+         SubjectDao dao = new SubjectDao();
+         dao.update(subject);
 
         req.setAttribute("subject", subject);
 
