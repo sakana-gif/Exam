@@ -24,6 +24,7 @@ public class StudentUpdateExecuteAction extends Action {
         String name     = req.getParameter("name");
         String classNum = req.getParameter("class_num");
         int entYear     = Integer.parseInt(req.getParameter("ent_year"));
+        String isAttendStr = req.getParameter("is_attend");
 
         int year = LocalDate.now().getYear();
         List<Integer> entYearSet = new ArrayList<>();
@@ -42,13 +43,15 @@ public class StudentUpdateExecuteAction extends Action {
             req.getRequestDispatcher("student_update.jsp").forward(req, res);
             return;
         }
-
+        
+        boolean isAttend = (isAttendStr != null);
+        
         Student student = new Student();
         student.setNo(no);
         student.setName(name.trim());
         student.setEntYear(entYear);
         student.setClassNum(classNum);
-        student.setAttend(true);
+        student.setAttend(isAttend);
         student.setSchool(school);
 
         new StudentDao().update(student);

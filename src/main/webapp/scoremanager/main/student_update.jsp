@@ -13,19 +13,17 @@
 		<section>
 			<h2 class="h3 mb-3 fw-norma bg-secondary bg-opacity-10 py-2 px-4">学生情報変更</h2>
 			<form action="StudentUpdateExecute.action" method="get">
-				<input type="hidden" name="no" value="${student.no}" />
 				<div>
 					<label for="ent_year">入学年度</label>
-					<select class="form-select" id="ent_year" name="ent_year">
-						<option value="0">--------</option>
-						<c:forEach var="year" items="${ent_year_set }">
-							<option value="${year }" <c:if test="${year==student.entYear}">selected</c:if>>${year }</option>
-						</c:forEach>
-					</select>
+					<input class="form-control-plaintext p-2" type="text" id="ent_year" name="ent_year" value="${student.entYear}" readonly/>
+				</div>
+				<div>
+					<label for="ent_year">学生番号</label>
+					<input class="form-control-plaintext p-2" type="text" id="no" name="no" value="${student.no}" readonly/>
 				</div>
 				<div>
 					<label for="name">氏名</label><br>
-					<input class="form-control" type="text" id="name" name="name" value="${student.name}" required maxlength="30" placeholder="氏名を入力してください" />
+					<input class="form-control" type="text" id="name" name="name" value="${student.name}"/>
 				</div>
 				<div class="mt-2 text-warning">${error}</div>
 				<div class="mx-auto py-2">
@@ -36,8 +34,15 @@
 						</c:forEach>
 					</select>
 				</div>
+				<div
+					class="d-flex gap-2 align-items-center col-2 px-0">
+					<label for="student-is_attend-check" class="mb-0"> 在学中 </label> <input
+						class="form-check-input m-0" type="checkbox"
+						id="student-is_attend-check" name="is_attend" value="true"
+						<c:if test="${student.attend}">checked</c:if> />
+				</div>
 				<div class="mx-auto py-2">
-					<button class="btn btn-secondary" name="end">変更して終了</button>
+					<button class="btn btn-primary" name="end">変更</button>
 				</div>
 			</form>
 			<a href="StudentList.action">戻る</a>
