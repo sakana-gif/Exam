@@ -66,6 +66,7 @@ public class TestRegistAction extends Action {
 			// 絞り込み条件に一致する学生と成績を取得
 			tests = tDao.filter(entYear, classNum, subject, num, school);
 		}
+<<<<<<< HEAD
  
 		//DBへデータ保存 5
 		// なし
@@ -75,13 +76,68 @@ public class TestRegistAction extends Action {
 		req.setAttribute("f2", classNum);
 		req.setAttribute("f3", subjectCd);
 		req.setAttribute("f4", numStr);
+=======
+		if (noStr != null) {
+			no = Integer.parseInt(noStr);
+		}
+
+		req.setAttribute("ent_year", entYear);
+		req.setAttribute("class_num", classNum);
+		req.setAttribute("subject_cd", subjectStr);
+		req.setAttribute("no", no);
+
+		SubjectDao subjectDao = new SubjectDao();
+		Subject subject = subjectDao.get(subjectStr, school);
+		
+		//入力欄チェック
+		if (entYear == 0 || classNum == null || classNum.equals("0") || subjectStr == null || no == 0) {
+			errors.put("error", "入力値が間違っています");
+			req.setAttribute("errors", errors);
+		}else {
+			//学生一覧取得
+			TestDao testDao = new TestDao();
+			tests = testDao.filter(entYear, classNum, subject, no, school);
+		}
+		
+		
+>>>>>>> branch 'master' of https://github.com/sakana-gif/Exam.git
 		req.setAttribute("tests", tests);
+<<<<<<< HEAD
 		req.setAttribute("ent_year_set", entYearSet);
 		req.setAttribute("class_num_set", classNumSet);
 		req.setAttribute("subject_set", subjectSet);
 		req.setAttribute("num_set", numSet);
  
 		//JSPへフォワード 7
+=======
+		req.setAttribute("subject", subject);
+		
+		// クラス番号リストを取得
+		ClassNumDao classNumDao = new ClassNumDao();
+		List<String> class_num_set = classNumDao.filter(school);
+		req.setAttribute("class_num_set", class_num_set);
+
+		// 入学年度リスト
+		int currentYear = LocalDate.now().getYear();
+		List<Integer> ent_year_set = new ArrayList<>();
+		for (int y = currentYear - 10; y <= currentYear + 1; y++) {
+			ent_year_set.add(y);
+		}
+		req.setAttribute("ent_year_set", ent_year_set);
+
+		// 科目リストを取得
+		//        SubjectDao subjectDao = new SubjectDao();
+		List<Subject> subject_set = subjectDao.filter(school);
+		req.setAttribute("subject_set", subject_set);
+
+		// 回数リスト（1回、2回など）
+		List<Integer> no_set = new ArrayList<>();
+		no_set.add(1);
+		no_set.add(2);
+		req.setAttribute("num_set", no_set);
+
+		// 成績登録画面へ
+>>>>>>> branch 'master' of https://github.com/sakana-gif/Exam.git
 		req.getRequestDispatcher("test_regist.jsp").forward(req, res);
 	}
 }

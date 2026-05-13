@@ -59,6 +59,6 @@ public class StudentCreateExecuteAction extends Action {
 
         studentDao.save(student);
 
-        req.getRequestDispatcher("sutudent_create_done.jsp").forward(req, res);
+        req.getRequestDispatcher("student_create_done.jsp").forward(req, res);
     }
 }
