@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
-
 <c:import url="/common/base.jsp">
 	<c:param name="title">得点管理システム</c:param>
 	<c:param name="content">
@@ -53,15 +52,11 @@
 					</div>
 				</div>
 			</form>
-
 			<c:if test="${subject!=null}">
 				<div>科目：${subject.name}（${no}回）</div>
 			</c:if>
-
 			<c:choose>
-
 				<c:when test="${tests.size()>0 }">
-
 					<form action="TestRegistExecute.action" method="post">
 						<table class="table table-hover">
 							<tr>
@@ -69,22 +64,24 @@
 								<th>クラス</th>
 								<th>学生番号</th>
 								<th>氏名</th>
-								<th>点数</th>
+								<th width="150">点数</th>
 							</tr>
-							<c:forEach var="test" items="${tests }">
-								<tr>
-									<td>${test.student.entYear }</td>
-									<td>${test.student.classNum }</td>
-									<td>${test.student.no}</td>
-									<td>${test.student.name}</td>
-									<td><input type="text" name="point_${test.student.no}"
-										class="" value="${test.point}" maxlength="3"></td>
-								</tr>
-								<input type="hidden" name="student_no"
-									value="${test.student.no}">
-							</c:forEach>
+							</thead>
+							<tbody>
+								<c:forEach var="test" items="${tests}">
+									<tr>
+										<td>${test.student.entYear}</td>
+										<td>${test.student.classNum}</td>
+										<td>${test.student.no}</td>
+										<td>${test.student.name}</td>
+										<td><input type="hidden" name="student_no_set"
+											value="${test.student.no}"> <input type="number"
+											name="point_${test.student.no}" class="form-control" min="0"
+											max="100" value="${test.point != -1 ? test.point : ''}">
+										</td>
+									</tr>
+								</c:forEach>
 						</table>
-
 						<input type="hidden" name="no" value="${no}"> <input
 							type="hidden" name="subject_cd" value="${subject_cd}">
 						<div class="col-12 mt-3">
@@ -97,7 +94,6 @@
 						<div>学生情報が存在しませんでした。</div>
 					</c:if>
 				</c:otherwise>
-
 			</c:choose>
 			<div class="mt-2 text-warning">${error}</div>
 		</section>

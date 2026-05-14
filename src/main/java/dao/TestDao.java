@@ -33,12 +33,8 @@ public class TestDao extends Dao {
 			List<Test> list = postFilter(resultSet, subject, school, num);
 			if (list.size() > 0) {
 				test = list.get(0);
-			} else {
-				System.out.println("0件");
-				System.out.println(student.getNo().trim());
-				System.out.println(resultSet);
-
 			}
+			
 		} catch (Exception e) {
 			throw e;
 		} finally {
@@ -66,13 +62,6 @@ public class TestDao extends Dao {
 				test.setStudent(studentDao.get(rSet.getString("student.no").trim()));
 				test.setSubject(subject);
 
-				System.out.println("---------------------");
-				System.out.println(test.getNo());
-				System.out.println(test.getPoint());
-				System.out.println(test.getClassNum());
-				System.out.println(test.getSchool().getCd());
-				System.out.println(test.getStudent().getNo());
-				System.out.println(test.getSubject().getCd());
 				list.add(test);
 			}
 		} catch (SQLException e) {
