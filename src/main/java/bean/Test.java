@@ -7,7 +7,7 @@ public class Test implements Serializable {
   private String classNum;
   private Subject subject;
   private School school;
-  private Integer no;
+  private int no;
   private int point;
 
   /**
@@ -69,14 +69,14 @@ public class Test implements Serializable {
   /**
    * @return no
    */
-  public Integer getNo() {
+  public int getNo() {
     return no;
   }
 
   /**
    * @param no セットする no
    */
-  public void setNo(Integer no) {
+  public void setNo(int no) {
     this.no = no;
   }
 

@@ -30,6 +30,7 @@ public class TestRegistExecuteAction extends Action {
 		}
 
 		String[] studentsNo = req.getParameterValues("student_no");
+		
 		String noStr = req.getParameter("no");
 		int no = 0;
 		String subject_cd = req.getParameter("subject_cd");
@@ -48,16 +49,10 @@ public class TestRegistExecuteAction extends Action {
 			Student student = studentDao.get(studentNo);
 			Subject subject = subjectDao.get(subject_cd, school);
 			String pointStr = req.getParameter("point_" + studentNo);
-			int point = 0;
+			int point = -1;
 
 			if (pointStr != null && !pointStr.isEmpty()) {
 				point = Integer.parseInt(pointStr);
-			}
-
-			if (point < 0 || point > 100) {
-				req.setAttribute("error", "０～１００の間で入力してください");
-				req.getRequestDispatcher("test_regist.jsp").forward(req, res);
-				return;
 			}
 
 			Test test = testDao.get(student, subject, school, no);

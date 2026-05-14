@@ -74,7 +74,7 @@
 										<td>${test.student.classNum}</td>
 										<td>${test.student.no}</td>
 										<td>${test.student.name}</td>
-										<td><input type="hidden" name="student_no_set"
+										<td><input type="hidden" name="student_no"
 											value="${test.student.no}"> <input type="number"
 											name="point_${test.student.no}" class="form-control" min="0"
 											max="100" value="${test.point != -1 ? test.point : ''}">

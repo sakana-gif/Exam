@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,8 @@ import bean.Subject;
 import bean.Test;
 
 public class TestDao extends Dao {
-
+	
+	// 科目cd・回数・入学年度・クラスnumを指定し、生徒テーブルとテストテーブルを取得するSQL
 	private String basesql = "select * from student left join test on test.student_no = student.no and test.subject_cd = ? and test.no = ? where student.ent_year = ? and student.class_num = ?";
 
 	public Test get(Student student, Subject subject, School school, int num) throws Exception {
@@ -34,7 +36,7 @@ public class TestDao extends Dao {
 			if (list.size() > 0) {
 				test = list.get(0);
 			}
-			
+
 		} catch (Exception e) {
 			throw e;
 		} finally {
@@ -53,9 +55,15 @@ public class TestDao extends Dao {
 			while (rSet.next()) {
 				Test test = new Test();
 				test.setNo(num);
-				test.setPoint(rSet.getInt("point"));
+
+				//pointがnullならば-1を代入　05/13
+				int point = rSet.getInt("point");
+				if (rSet.wasNull()) {
+					point = -1;
+				}
+				test.setPoint(point);
+
 				test.setClassNum(rSet.getString("class_num").trim());
-				// Note: You would typically use StudentDao and SubjectDao here to populate objects
 				test.setSchool(school);
 
 				// 05/13 追加：Student,Subjectをtestに入れる
@@ -90,7 +98,7 @@ public class TestDao extends Dao {
 			//			statement.setInt(5, num);
 
 			ResultSet resultSet = statement.executeQuery();
-			list = postFilter(resultSet, subject, school,num);
+			list = postFilter(resultSet, subject, school, num);
 		} catch (Exception e) {
 			throw e;
 		} finally {
@@ -130,8 +138,12 @@ public class TestDao extends Dao {
 			statement.setInt(3, test.getNo());
 			ResultSet rs = statement.executeQuery();
 			rs.next();
-
-			if (rs.getInt(1) == 0) {
+			
+			boolean exists = rs.getInt(1) > 0;
+			rs.close();
+			statement.close();
+			
+			if (!exists) {
 				// Insert
 				statement = connection.prepareStatement(
 						"insert into test(student_no, subject_cd, school_cd, no, point, class_num) values(?, ?, ?, ?, ?, ?)");
@@ -139,13 +151,27 @@ public class TestDao extends Dao {
 				statement.setString(2, test.getSubject().getCd().trim());
 				statement.setString(3, test.getSchool().getCd().trim());
 				statement.setInt(4, test.getNo());
-				statement.setInt(5, test.getPoint());
+
+				//pointが-1の場合nullをテーブルに入れる 05/14
+				if (test.getPoint() == -1) {
+					statement.setNull(5, java.sql.Types.INTEGER);
+				} else {
+					statement.setInt(5, test.getPoint());
+				}
+
 				statement.setString(6, test.getClassNum().trim());
 			} else {
 				// Update
 				statement = connection.prepareStatement(
 						"update test set point = ? where student_no = ? and subject_cd = ? and no = ?");
-				statement.setInt(1, test.getPoint());
+
+				//pointが-1の場合nullをテーブルに入れる 05/14
+				if (test.getPoint() == -1) {
+					statement.setNull(1, Types.INTEGER);
+				} else {
+					statement.setInt(1, test.getPoint());
+				}
+
 				statement.setString(2, test.getStudent().getNo().trim());
 				statement.setString(3, test.getSubject().getCd().trim());
 				statement.setInt(4, test.getNo());
