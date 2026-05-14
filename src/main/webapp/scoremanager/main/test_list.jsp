@@ -65,7 +65,7 @@
       <%-- 学生番号検索 --%>
       <form action="TestListStudentExecute.action" method="get">
         <div class="row border-bottom pb-3 mb-4">
-          <h5>学生毎</h5>
+          <h5>学生情報</h5>
           <div class="col-4">
             <label class="form-label">学生番号</label>
             <input class="form-control" type="text" name="student_no" value="${student_no }" placeholder="学生番号を入力してください" />
