@@ -1,7 +1,5 @@
 package scoremanager.main;
  
-import java.util.List;
-
 import bean.School;
 import bean.Subject;
 import bean.Teacher;
@@ -11,34 +9,36 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import tool.Action;
  
-public class SubjectListAction extends Action {
+public class SubjectDeleteExecuteAction extends Action {
  
 	@Override
 	public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		//ローカル変数の宣言 1
-		HttpSession session = req.getSession();//セッション
-		Teacher teacher = (Teacher) session.getAttribute("user");// ログインユーザー
-		School school = teacher.getSchool();// ログインユーザーの所属学校
-		List<Subject> subjects = null;// 科目リスト
-		SubjectDao sDao = new SubjectDao();// 科目Dao
+		HttpSession session = req.getSession();
+		Teacher teacher = (Teacher) session.getAttribute("user");
+		School school = teacher.getSchool();
+		String cd = "";
+		Subject subject = null;
+		SubjectDao sDao = new SubjectDao();
  
 		//リクエストパラメータ―の取得 2
-		// なし
+		cd = req.getParameter("cd");
  
 		//DBからデータ取得 3
-		// 学校に紐づく全科目を取得
-		subjects = sDao.filter(school);
+		subject = sDao.get(cd, school);
  
 		//ビジネスロジック 4
 		// なし
  
 		//DBへデータ保存 5
-		// なし
+		if (subject != null) {
+			sDao.delete(subject);
+		}
  
 		//レスポンス値をセット 6
-		req.setAttribute("subjects", subjects);
+		// なし
  
 		//JSPへフォワード 7
-		req.getRequestDispatcher("subject_list.jsp").forward(req, res);
+		req.getRequestDispatcher("subject_delete_done.jsp").forward(req, res);
 	}
 }
